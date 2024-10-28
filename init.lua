@@ -41,7 +41,7 @@ What is Kickstart?
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
-Kickstart Guide:
+Kickstart /////:
 
   TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
 
@@ -97,12 +97,12 @@ vim.g.have_nerd_font = false
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-
+vim.o.guicursor = 'n-v-c-sm-i-ci-ve:block,r-cr-o:hor50,i-ci-sm:blinkwait10-blinkoff300-blinkon250-Cursor/lCursor'
 -- Make line numbers default
-vim.opt.number = true
+-- vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -146,7 +146,7 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', space = '·' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -159,6 +159,16 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+vim.keymap.set('n', '<Tab>', '<cmd>tabn<CR>')
+vim.keymap.set('n', '<S-Tab>', '<cmd>tabp<CR>')
+
+vim.keymap.set('n', '<C-n>n', '<cmd>Neotree toggle position=current<CR>', { desc = 'Toggle Neotree in full screen' })
+vim.keymap.set('n', '<C-n>l', '<cmd>Neotree toggle position=right<CR>', { desc = 'Toggle Neotree on the right' })
+vim.keymap.set('n', '<C-n>h', '<cmd>Neotree toggle position=left<CR>', { desc = 'Toggle Neotree on the left' })
+vim.keymap.set('n', '<C-n>j', '<cmd>Neotree toggle position=bottom<CR>', { desc = 'Toggle Neotree on the bottom' })
+vim.keymap.set('n', '<C-n>k', '<cmd>Neotree toggle position=top<CR>', { desc = 'Toggle Neotree on the top' })
+vim.keymap.set('n', '<C-n>gs', '<cmd>Neotree git_status<CR>', { desc = 'Execute "git status" command via Neotree' })
+vim.keymap.set('n', '<C-n>f', '<cmd>Neotree focus<CR>', { desc = 'Focus the Neotree' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -230,7 +240,16 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+    },
+    opts = {},
+  },
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -375,7 +394,7 @@ require('lazy').setup({
       -- This opens a window that shows you all of the keymaps for the current
       -- Telescope picker. This is really useful to discover what Telescope can
       -- do as well as how to actually do it!
-
+      require('lspconfig').cmake.setup {}
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
@@ -505,9 +524,8 @@ require('lazy').setup({
           --
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
-          local map = function(keys, func, desc, mode)
-            mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          local map = function(keys, func, desc)
+            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
           -- Jump to the definition of the word under your cursor.
@@ -605,9 +623,9 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -764,24 +782,24 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          --['<C-n>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          --['<C-p>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          --['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          --['<C-f>'] = cmp.mapping.scroll_docs(4),
 
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          --['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.select_next_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
